@@ -21,6 +21,7 @@ class currency:
         if len(str(timestamp)) == 13: self.timestamp = timestamp // 1000
         else: self.timestamp = timestamp
         self.curr = kwargs.get('currency', 'usd')
+        self.update_output()
 
     @property
     def date(self):
@@ -32,7 +33,7 @@ class currency:
             expire_date = expire_date.replace(hour = 0, minute = 0, second = 0)
             
         elif is_historical is False:
-            expire_date = modified_date + self.timedelta(minutes = 5)
+            expire_date = modified_date + self.timedelta(minutes = 10)
             expire_date = expire_date.replace(microsecond = 0)
 
         api_format = modified_date.strftime('%d-%m-%Y %H:%M:%S')
@@ -67,6 +68,7 @@ class currency:
             symbol_list = self.json.loads(file.read())
 
         for symbol, id in bcgame_list.items():
+            print('[STATUS] :: prices calculating')
             if id and (symbol in symbol_list):
                 coin_data = self.cg.get_coin_history_by_id(date = str(self.date['modifiedDateApi']), id = id)
                 if 'market_data' in coin_data:
@@ -99,9 +101,11 @@ class currency:
                 expire_date = self.datetime.strptime(expire_date, '%Y-%m-%d %H:%M:%S')
 
                 if timestamp_date >= expire_date:
+                    print('[STATUS] :: updating prices and expire date')
                     with open(self.file_path['price_list'], 'w') as file:
                         file.write(self.json.dumps(self.data))
 
         else:
+            print('[STATUS] :: calculating prices and expire date')
             with open(self.file_path['price_list'], 'w') as file:
                 file.write(self.json.dumps(self.data))
