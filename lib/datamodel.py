@@ -24,8 +24,16 @@ class datamodel:
         gv = data['data']['gv']
         for player in gv:
             for bet in player['bets']:
-                bet['profitAmount'] = str(float(bet['winAmount']) - float(bet['betAmount']))
+                bet['betId'] = int(bet['betId'])
+                bet['betAmount'] = float(bet['betAmount'])
+                bet['winAmount'] = float(bet['winAmount'])
+                bet['profitAmount'] = float(bet['winAmount']) - float(bet['betAmount'])
                 bet['odds'] /= 10000
+                if bet['profitAmount'] > 0:
+                    bet['betStatus'] = 'win'
+
+                else: 
+                    bet['betStatus'] = 'lose'
 
                 currency = {}
                 currency_name = data['data']['gb']['price']['currencyName']
@@ -33,9 +41,9 @@ class datamodel:
                     price = data['data']['gb']['price']['priceList'][bet['currencyName'].lower()]['price']
                     if price:
                         currency['currencyName'] = currency_name
-                        currency['betAmount'] = float(bet['betAmount']) * price
-                        currency['winAmount'] = float(bet['winAmount']) * price
-                        currency['profitAmount'] = float(bet['profitAmount']) * price
+                        currency['betAmount'] = bet['betAmount'] * price
+                        currency['winAmount'] = bet['winAmount'] * price
+                        currency['profitAmount'] = bet['profitAmount'] * price
                         currency['isValuable'] = True
 
                     else:
@@ -76,8 +84,13 @@ class datamodel:
         data['data']['gb']['playerCount'] = len(data['data']['gv'])
         data['data']['gb']['betCount'] = bet_counter
 
-        # return data
-        self.write_output(data)
+        # self.write_output(data)
+        return data
+
+    @property
+    def data(self):
+        return self.add_total_values()
+
 
     # @property
     # def example(self):

@@ -24,6 +24,11 @@ class currency:
         self.update_output()
 
     @property
+    def get_time(self):
+        date = self.datetime.fromtimestamp(self.timestamp)
+        return self.datetime.strftime(date, '%Y-%m-%d %H:%M:%S')
+
+    @property
     def date(self):
         modified_date = self.datetime.fromtimestamp(self.timestamp).replace(microsecond = 0)
         is_historical = (True if self.datetime.now().date() > modified_date.date() else False)
@@ -68,7 +73,6 @@ class currency:
             symbol_list = self.json.loads(file.read())
 
         for symbol, id in bcgame_list.items():
-            print('[STATUS] :: prices calculating')
             if id and (symbol in symbol_list):
                 coin_data = self.cg.get_coin_history_by_id(date = str(self.date['modifiedDateApi']), id = id)
                 if 'market_data' in coin_data:
