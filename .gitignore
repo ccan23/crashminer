@@ -1,2 +1,4 @@
 test/
 **/__pycache__/
+resources/price_list.json
+data/*
