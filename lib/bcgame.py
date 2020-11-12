@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-s', '--start', type = int, required = True)
+parser.add_argument('-e', '--end', type = int, required = True)
+
+args = parser.parse_args()
+
 class bcgame:
 
     from datetime import datetime
@@ -9,7 +17,7 @@ class bcgame:
     from datamodel import datamodel
     from bcdatabase import bcdatabase
 
-    for gameid in range(3036481, 3036550):
+    for gameid in range(args.start, args.end):
         game = crawler(gameid)
         game = game.data
         
