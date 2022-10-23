@@ -1,1 +1,2 @@
 pycoingecko
+psycopg2
